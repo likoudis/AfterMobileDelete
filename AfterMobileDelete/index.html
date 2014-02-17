@@ -99,6 +99,7 @@
 
     </div>
 
+    <!--Time tracking-->
     <div id="tabstrip-timetrack" 
         data-role="view" 
         data-title="Time Track"
@@ -109,8 +110,8 @@
         
         <ul data-role="listview" 
             data-style="inset" 
-            data-bind="source: timetrackDataSource"
-            data-template="timetrack-startstops-template" data-append-on-refresh="false">
+            data-bind="source: timeTrackData"
+            data-template="timetrack-startstops-template">
         </ul>
     </div>
     
@@ -175,7 +176,7 @@
             <div data-role="tabstrip">
                 <a href="#tabstrip-home" data-icon="home">Home</a>
                 <a href="#tabstrip-login" data-icon="contacts">Login</a>
-                <a data-role="button" data-icon="recents" href="#tabstrip-timetrack">Time Track</a>
+                <a href="#tabstrip-timetrack" data-icon="recents">Track</a>
                 <a href="#tabstrip-location" data-icon="search">Location</a>
                 <a href="#tabstrip-weather" data-icon="globe">Weather</a>
             </div>
