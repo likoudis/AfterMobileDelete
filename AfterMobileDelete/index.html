@@ -14,6 +14,7 @@
     <script src="scripts/login.js"></script>
     <script src="scripts/location.js"></script>
     <script src="scripts/weather.js"></script>
+    <script src="scripts/timetrack.js"></script>
     <script src="scripts/app.js"></script>
 
 </head>
@@ -98,6 +99,29 @@
 
     </div>
 
+    <div id="tabstrip-timetrack" 
+        data-role="view" 
+        data-title="Time Track"
+        data-init="app.timetrackService.initTimeTrack"
+        data-model="app.timetrackService.viewModel">
+        
+        <a data-role="button" data-icon="play" data-click="app.timetrackService.click">Start</a>
+        
+        <ul data-role="listview" 
+            data-style="inset" 
+            data-bind="source: timetrackDataSource"
+            data-template="timetrack-startstops-template" data-append-on-refresh="false">
+        </ul>
+    </div>
+    
+    <!--Time Starts/Stops template-->
+    <script type="text/x-kendo-tmpl" id="timetrack-startstops-template">
+        <div>
+            <div class="position-left">#:start#</div>
+            <div class="position-right">#:stop#</div>
+        </div>
+    </script>
+    
     <!--Weather-->
     <div id="tabstrip-weather"
         data-role="view"
@@ -151,10 +175,13 @@
             <div data-role="tabstrip">
                 <a href="#tabstrip-home" data-icon="home">Home</a>
                 <a href="#tabstrip-login" data-icon="contacts">Login</a>
+                <a data-role="button" data-icon="recents" href="#tabstrip-timetrack">Time Track</a>
                 <a href="#tabstrip-location" data-icon="search">Location</a>
                 <a href="#tabstrip-weather" data-icon="globe">Weather</a>
             </div>
         </div>
+    
+
     </div>
 </body>
 </html>
