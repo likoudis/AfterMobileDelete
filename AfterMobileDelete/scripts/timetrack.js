@@ -34,12 +34,6 @@
             starts[starts.length] = Date();
             alert("starts " + starts.length);
             alert(this.timetrackDataSource);
-            this.timetrackDataSource = new kendo.data.DataSource({
-                data: [ 
-                    {start: starts[0], stop: "stop 1"},
-                    {start: "start 2", stop: "stop 2"}
-                ]
-            });
         },
         
         onStop: function(e) {
