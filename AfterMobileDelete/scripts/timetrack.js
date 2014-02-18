@@ -1,14 +1,12 @@
 (function (global) {
     app = global.app = global.app || {};
     var TimetrackModel;
-    var starts = new Array();
-    var stops  = new Array();
     
     TimetrackModel = kendo.data.ObservableObject.extend({
         
         isTimetrackModelInitialized: false,
-        timetrackDataSource : null,
-        timetrackData: [],
+        timeTrackDataSource : null,
+        timeTrackData: [],
 
         init: function() {
             var that = this,
@@ -17,33 +15,22 @@
             kendo.data.ObservableObject.fn.init.apply(that, []);
             
             dataSource = new kendo.data.DataSource({
-                data: [ 
-                    {start: starts[0], stop: "stop 1"},
-                    {start: "start 2", stop: "stop 2"}
-                ]
+                data:  this.timeTrackData
             });
-            
-            that.set("timetrackDataSource", dataSource);
-            that.set("timeTrackData", []);
+
+            that.set("timeTrackDataSource", dataSource);
+            //that.set("timeTrackData", []);
         },
         
         onStart: function(e) {
-            var temp = [];
-            var that = this;
-            
-            temp = that.get("timeTrackData");
-            temp.push({start: Date(), stop: ""});
-            that.set("timeTrackData", temp);
+             this.timeTrackDataSource.add({start: Date(), stop: "NothingYet"});
         },
         
         onStop: function(e) {
-            var temp = [];
-            var that = this;
+            var temp;
             
-            temp = that.get("timeTrackData");
-            //temp[temp.length - 1].start = "shit";
-            temp.push({start: "", stop: Date()});
-            that.set("timeTrackData", temp);
+            temp = this.timeTrackDataSource.data().length -1 ;
+            this.timeTrackDataSource.data()[temp].set("stop", Date());
         }
     });
     
@@ -51,7 +38,7 @@
         initTimeTrack: function () {
             starts = new Array();
             stops = new Array();
-            app.timetrackService.viewModel.set("isTimeTrackModelInitialized", true);            
+            app.timetrackService.viewModel.set("isTimetrackModelInitialized", true);            
         },
         
         click: function(e) {
