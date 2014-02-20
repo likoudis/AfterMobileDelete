@@ -19,7 +19,6 @@
             });
 
             that.set("timeTrackDataSource", dataSource);
-            //that.set("timeTrackData", []);
         },
         
         onStart: function(e) {
