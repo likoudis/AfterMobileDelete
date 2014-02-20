@@ -30,14 +30,13 @@
             var temp;
             
             temp = this.timeTrackDataSource.data().length -1 ;
-            this.timeTrackDataSource.data()[temp].set("stop", Date());
+            this.timeTrackDataSource.data()[temp].set("stop", 
+              this.timeTrackDataSource.data()[temp].start);
         }
     });
     
     app.timetrackService = {
         initTimeTrack: function () {
-            starts = new Array();
-            stops = new Array();
             app.timetrackService.viewModel.set("isTimetrackModelInitialized", true);            
         },
         

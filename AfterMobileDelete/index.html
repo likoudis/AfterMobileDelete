@@ -9,12 +9,13 @@
     <script src="cordova.js"></script>
     <script src="kendo/js/jquery.min.js"></script>
     <script src="kendo/js/kendo.mobile.min.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
 
     <script src="scripts/login.js"></script>
+    <script src="scripts/timetrack.js"></script>
+    <script src="scripts/task_prj.js"></script>
     <script src="scripts/location.js"></script>
     <script src="scripts/weather.js"></script>
-    <script src="scripts/timetrack.js"></script>
     <script src="scripts/app.js"></script>
 
 </head>
@@ -75,30 +76,6 @@
 
     </div>
 
-    <!--Location-->
-    <div id="tabstrip-location"
-        data-role="view"
-        data-title="Location"
-        data-init="app.locationService.initLocation"
-        data-show="app.locationService.show"
-        data-hide="app.locationService.hide"
-        data-model="app.locationService.viewModel"
-        data-stretch="true">
-
-        <div id="no-map" data-bind="invisible: isGoogleMapsInitialized">
-            Location requires internet connection to display the map.
-        </div>
-        <div id="map-search-wrap" data-bind="visible: isGoogleMapsInitialized">
-            <button id="map-navigate-home" data-bind="click: onNavigateHome"></button>
-            <form onsubmit="return false;">
-                <input id="map-address" type="search" data-bind="value: address" placeholder="Address" />
-                <input id="map-search" type="submit" value="" data-bind="click: onSearchAddress" />
-            </form>
-        </div>
-        <div id="map-canvas" data-bind="visible: isGoogleMapsInitialized"></div>
-
-    </div>
-
     <!--Time tracking-->
     <div id="tabstrip-timetrack" 
         data-role="view" 
@@ -123,6 +100,55 @@
         </div>
     </script>
     
+    <!--Tasks and Projects-->
+    <div id="tabstrip-taskPrj"
+        data-role="view"
+        data-title="TasksAndProjects"
+        data-model="app.taskPrjService.viewModel">
+
+        <ul data-role="listview">
+            <li>
+                <label>Currently on: 
+                    <input type="text" data-bind="value: currentPrj" />
+                </label>
+            </li>
+        </ul>
+
+        <ul data-role="listview" 
+            data-style="inset"
+            data-bind="source: taskPrjDataSource, click: projectSelect"
+            data-template="projectListTmpl">
+        </ul>
+    </div>
+            
+    <script type="text/x-kendo-tmpl" id="projectListTmpl">
+        <a>#:Id#</a>
+    </script>    
+
+    <!--Location-->
+    <div id="tabstrip-location"
+        data-role="view"
+        data-title="Location"
+        data-init="app.locationService.initLocation"
+        data-show="app.locationService.show"
+        data-hide="app.locationService.hide"
+        data-model="app.locationService.viewModel"
+        data-stretch="true">
+
+        <div id="no-map" data-bind="invisible: isGoogleMapsInitialized">
+            Location requires internet connection to display the map.
+        </div>
+        <div id="map-search-wrap" data-bind="visible: isGoogleMapsInitialized">
+            <button id="map-navigate-home" data-bind="click: onNavigateHome"></button>
+            <form onsubmit="return false;">
+                <input id="map-address" type="search" data-bind="value: address" placeholder="Address" />
+                <input id="map-search" type="submit" value="" data-bind="click: onSearchAddress" />
+            </form>
+        </div>
+        <div id="map-canvas" data-bind="visible: isGoogleMapsInitialized"></div>
+
+    </div>
+
     <!--Weather-->
     <div id="tabstrip-weather"
         data-role="view"
@@ -177,12 +203,15 @@
                 <a href="#tabstrip-home" data-icon="home">Home</a>
                 <a href="#tabstrip-login" data-icon="contacts">Login</a>
                 <a href="#tabstrip-timetrack" data-icon="recents">Track</a>
+                <a href="#tabstrip-taskPrj" data-icon="bookmarks">Tasks</a>
                 <a href="#tabstrip-location" data-icon="search">Location</a>
+
                 <a href="#tabstrip-weather" data-icon="globe">Weather</a>
             </div>
         </div>
     
-
+    
+    
     </div>
 </body>
 </html>
