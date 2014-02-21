@@ -28,6 +28,7 @@
         
         projectSelect: function (e) {
             this.set("currentPrj", e.item.text().trim());
+            app.timetrackService.changeProject(e.item.text().trim());
         }
     });
 

@@ -83,8 +83,8 @@
         data-init="app.timetrackService.initTimeTrack"
         data-model="app.timetrackService.viewModel">
 
-        <div>
-            Charging time on: <span data-bind="value:app.taskPrjService.viewModel.currentPrj"></span>
+        <div >
+            Charging time on: <b><span data-bind="text: currentProject"></span></b>
         </div>
         
         <a data-role="button" data-icon="play" data-click="app.timetrackService.click">Start</a>

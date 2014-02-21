@@ -8,7 +8,7 @@
     }, false);
 
     app.application = new kendo.mobile.Application(document.body, { transition: "fade", layout: "tabstrip-layout"});
-
+    
     app.changeSkin = function (e) {
         if (e.sender.element.text() === "Flat") {
             e.sender.element.text("Native");
@@ -18,7 +18,7 @@
             e.sender.element.text("Flat");
             mobileSkin = "";
         }
-
         app.application.skin(mobileSkin);
     };
+    
 })(window);

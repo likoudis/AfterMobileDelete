@@ -7,6 +7,7 @@
         isTimetrackModelInitialized: false,
         timeTrackDataSource : null,
         timeTrackData: [],
+        currentProject: "notsetyet",
 
         init: function() {
             var that = this,
@@ -31,12 +32,13 @@
             temp = this.timeTrackDataSource.data().length -1 ;
             this.timeTrackDataSource.data()[temp].set("stop", 
               this.timeTrackDataSource.data()[temp].start);
-        }
+        }       
+        
     });
     
     app.timetrackService = {
         initTimeTrack: function () {
-            app.timetrackService.viewModel.set("isTimetrackModelInitialized", true);            
+            this.viewModel.set("isTimetrackModelInitialized", true);            
         },
         
         click: function(e) {
@@ -47,6 +49,10 @@
                 app.timetrackService.viewModel.onStop(e);
                 e.sender.element.text("Start");
             }
+        },
+    
+        changeProject: function(e) {
+            this.viewModel.set("currentProject",e);
         },
         
         viewModel: new TimetrackModel()
