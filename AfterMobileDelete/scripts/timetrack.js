@@ -38,7 +38,7 @@
     
     app.timetrackService = {
         initTimeTrack: function () {
-            this.viewModel.set("isTimetrackModelInitialized", true);            
+            app.timetrackService.viewModel.set("isTimetrackModelInitialized", true);  
         },
         
         click: function(e) {
