@@ -23,7 +23,7 @@
            
             dataSource = new kendo.data.DataSource({
                 //data:  this.timeTrackData,
-				autosync: true,
+				//autosync: true,
 				transport: {
 /*
 					create: {
@@ -47,7 +47,7 @@
 */
 					create: function(options){
 						var localData = JSON.parse(localStorage["prjTrackData"]);
-alert("Creating..." + localData.length);
+//alert("Creating..." + localData.length);
 						var pairId = localData.length;
 						localData.push({pairId: 5, start: 5, stop: 5});
 						localData[pairId].pairId = pairId;
@@ -67,19 +67,26 @@ console.log(localData[pairId]);
 					update: function(options){
 						var updatedIdx = -1;
 						var localData = JSON.parse(localStorage["prjTrackData"]); 
-alert("Updating..." + localData.length);
-						for(var i=0; i<localData.length; i++){
+						var pairId = localData.length;
+//alert("Updating..." + pairId);
+//console.log(options);
+//console.log(localData[pairId-1]);
+console.log(localStorage.getItem("prjTrackData"));
+						for(var i=0; i < localData.length; i++){
 							if(localData[i].pairId === options.data.pairId){
+								//localData[i].start = options.data.start;
+								//localData[i].stop  = options.data.stop;
 								localData[i].start = options.data.start;
 								localData[i].stop  = options.data.stop;
 								updatedIdx = i;
 							} 
 						}
+//console.log(localData[pairId-1]);
 						if (updatedIdx >= 0) {
 							localStorage["prjTrackData"] = JSON.stringify(localData);
 							options.success({});
                         } else {
-							options.error();
+							options.error({});
                         }
 					},
 					destroy: function(options){ 
@@ -113,8 +120,8 @@ alert("Updating..." + localData.length);
         },
         
         onStop: function(e) {
-console.log(this.timeTrackDataSource.data().length);
-			console.log(this.timeTrackDataSource.data()[this.timeTrackDataSource.data().length-1]);
+//console.log(this.timeTrackDataSource.data().length);
+//console.log(this.timeTrackDataSource.data()[this.timeTrackDataSource.data().length-1]);
 			this.timeTrackDataSource.data()[this.timeTrackDataSource.data().length - 1].set("stop", Date());
 			this.timeTrackDataSource.sync();
 		},
@@ -130,6 +137,11 @@ console.log(this.timeTrackDataSource.data().length);
                 app.timetrackService.viewModel.onStart(e);
                 e.sender.element.text("Stop");
 				$("#startStopButton").kendoMobileButton({ icon: "stop" });
+				var temp =app.timetrackService.viewModel.timeTrackDataSource.data().length
+				if (temp > 3) {
+					$("#tmeTrkScroller").data("kendoMobileScroller").scrollTo(0, 
+						-93 * (app.timetrackService.viewModel.timeTrackDataSource.data().length - 3));
+				}
             } else {
                 app.timetrackService.viewModel.onStop(e);
                 e.sender.element.text("Start");
