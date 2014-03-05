@@ -132,6 +132,9 @@
                 e.sender.element.text("Start");
 				$("#startStopButton").kendoMobileButton({ icon: "play" });
             } else {
+                var elem = document.getElementById("startStopButton");
+                elem.children[1].innerText="Start";
+				//$("#startStopButton").kendoMobileButton({ icon: "play" });
                 app.timetrackService.viewModel.onDelete(e);
 			}
 			var temp = app.timetrackService.viewModel.timeTrackDataSource.data().length - 23
