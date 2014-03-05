@@ -84,20 +84,30 @@
 		data-model="app.timetrackService.viewModel">
 
 		<div>
+			<p></p>
 			<span 
 				id="startStopButton"
 				data-role="button"
 				data-icon="play"
 				data-click="app.timetrackService.click"
-				style="width: 75px; margin-left: 4px">
+				style="width: 79px; margin-left: 4px">
 
 				Start
             </span>
 			Now on: <b><span data-bind="text: currentProject"></span></b>
+			<span 
+				id="deleteButton"
+				data-role="button"
+				data-icon="delete"
+				data-click="app.timetrackService.click"
+				style="width: 89px; margin-right: 4px; float: right">
+
+				Delete
+            </span>
 		</div>
 
-		<div id="tmeTrkScroller", data-role="scroller" class="scroller-content"
-			style="margin-left:auto; margin-right:auto; width: 97%; height: 320px">	  
+		<div id="tmeTrkScroller" data-role="scroller" class="scroller-content"
+			style="margin-left:auto; margin-right:auto; width: 97%; height: 800px">	  
 			<div data-role="listview" 
 				data-style="inset" 
 				data-bind="source: timeTrackDataSource"

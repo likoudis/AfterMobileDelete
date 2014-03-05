@@ -6,7 +6,7 @@
         
         isTimetrackModelInitialized: false,
         timeTrackDataSource : null,
-        timeTrackData: [{pairId: 1 , start: 1, stop: 1}],
+        //timeTrackData: [{pairId: 1 , start: 1, stop: 1}],
         currentProject: "notsetyet",
 
         init: function() {
@@ -15,12 +15,10 @@
           
             kendo.data.ObservableObject.fn.init.apply(that, []);
 			
-			var temp = [
-				//{pairId: 0, start: 4, stop: 4}
-			];
-			
-			localStorage["prjTrackData"] = JSON.stringify(temp);
-           
+			if (localStorage["prjTrackData"] === undefined) {
+				localStorage["prjTrackData"] = JSON.stringify([]);
+			}
+
             dataSource = new kendo.data.DataSource({
                 //data:  this.timeTrackData,
 				//autosync: true,
@@ -38,62 +36,33 @@
 						url: "data/prjDataStore.json",
 						dataType: "json"
 					},
-//					parameterMap: function(options, operation) {
-//console.log("Fired parameterMap");
-//						if (operation !== "read" && options.models) {
-//							return {models: kendo.stringify(options.models)};
-//						}
-//					}
 */
 					create: function(options){
 						var localData = JSON.parse(localStorage["prjTrackData"]);
-//alert("Creating..." + localData.length);
-						var pairId = localData.length;
-						localData.push({pairId: 5, start: 5, stop: 5});
-						localData[pairId].pairId = pairId;
+						var pairId = localData.length ;
+						localData.push({pairId: pairId, start: "", stop: ""});
 						localData[pairId].start = options.data.start;
 						localData[pairId].stop  = options.data.stop;
-console.log(options);
-console.log(localData[pairId]);
 					
-						localStorage["prjTrackData"] = JSON.stringify(localData);
-//console.log(localStorage["prjTrackData"]);
-						options.success({});
+						localData = localStorage["prjTrackData"] = JSON.stringify(localData);
+						options.success([]);
 					},
 					read: function(options){
 						var localData = JSON.parse(localStorage["prjTrackData"]); 
 						options.success(localData);
 					},
 					update: function(options){
-						var updatedIdx = -1;
 						var localData = JSON.parse(localStorage["prjTrackData"]); 
-						var pairId = localData.length;
-//alert("Updating..." + pairId);
-//console.log(options);
-//console.log(localData[pairId-1]);
-console.log(localStorage.getItem("prjTrackData"));
-						for(var i=0; i < localData.length; i++){
-							if(localData[i].pairId === options.data.pairId){
-								//localData[i].start = options.data.start;
-								//localData[i].stop  = options.data.stop;
-								localData[i].start = options.data.start;
-								localData[i].stop  = options.data.stop;
-								updatedIdx = i;
-							} 
-						}
-//console.log(localData[pairId-1]);
-						if (updatedIdx >= 0) {
-							localStorage["prjTrackData"] = JSON.stringify(localData);
-							options.success({});
-                        } else {
-							options.error({});
-                        }
+						var pairId = localData.length - 1;
+						localData[pairId].stop  = options.data.stop;
+						localStorage["prjTrackData"] = JSON.stringify(localData);
+						options.success([]);
 					},
 					destroy: function(options){ 
 						var localData = JSON.parse(localStorage["prjTrackData"]); 
-						localData.remove(options.data.pairId);
+						localData.pop();
 						localStorage["prjTrackData"] = JSON.stringify(localData); 
-						options.success(localData[pairId]);
+						options.success([]);
 					},
 				},
 				schema: {
@@ -114,15 +83,36 @@ console.log(localStorage.getItem("prjTrackData"));
         },
         
         onStart: function(e) {
+			var today= new Date();
+			var h=today.getHours();
+			var m=today.getMinutes();
+			var s=today.getSeconds();
+			m= m<10 ? "0" + m : m;
+			s= s<10 ? "0" + s : s;
+
 			this.timeTrackDataSource.add({
-				 start: Date(), stop: "Work in progress"});
+				 start: h+" : "+m+" : "+s, stop: "Work in progress"});
 			this.timeTrackDataSource.sync();
         },
         
         onStop: function(e) {
-//console.log(this.timeTrackDataSource.data().length);
-//console.log(this.timeTrackDataSource.data()[this.timeTrackDataSource.data().length-1]);
-			this.timeTrackDataSource.data()[this.timeTrackDataSource.data().length - 1].set("stop", Date());
+			var today= new Date();
+			var h=today.getHours();
+			var m=today.getMinutes();
+			var s=today.getSeconds();
+			m= m<10 ? "0" + m : m;
+			s= s<10 ? "0" + s : s;
+
+			this.timeTrackDataSource.data()[
+				this.timeTrackDataSource.data().length - 1
+			].set("stop", h+" : "+m+" : "+s);
+			this.timeTrackDataSource.sync();
+		},
+
+       onDelete: function(e) {
+		   this.timeTrackDataSource.remove(
+				this.timeTrackDataSource.data()[
+					this.timeTrackDataSource.data().length - 1]);
 			this.timeTrackDataSource.sync();
 		},
 	});
@@ -137,16 +127,18 @@ console.log(localStorage.getItem("prjTrackData"));
                 app.timetrackService.viewModel.onStart(e);
                 e.sender.element.text("Stop");
 				$("#startStopButton").kendoMobileButton({ icon: "stop" });
-				var temp =app.timetrackService.viewModel.timeTrackDataSource.data().length
-				if (temp > 3) {
-					$("#tmeTrkScroller").data("kendoMobileScroller").scrollTo(0, 
-						-93 * (app.timetrackService.viewModel.timeTrackDataSource.data().length - 3));
-				}
-            } else {
+            } else if (e.sender.element.text().trim() === "Stop") {
                 app.timetrackService.viewModel.onStop(e);
                 e.sender.element.text("Start");
 				$("#startStopButton").kendoMobileButton({ icon: "play" });
-            }
+            } else {
+                app.timetrackService.viewModel.onDelete(e);
+			}
+			var temp = app.timetrackService.viewModel.timeTrackDataSource.data().length - 23
+			if (temp > 0) {
+				$("#tmeTrkScroller").data("kendoMobileScroller").scrollTo(
+					0, -40 * temp);
+			}
 		},
     
         changeProject: function(v) {
