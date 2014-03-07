@@ -139,6 +139,8 @@
 				$("#startButton").show();
             } else {
                 app.timetrackService.viewModel.onDelete(e);
+				$("#stopButton").hide();
+				$("#startButton").show();
 			}
 			var temp = app.timetrackService.viewModel.timeTrackDataSource.data().length - 23
 			if (temp > 0) {
