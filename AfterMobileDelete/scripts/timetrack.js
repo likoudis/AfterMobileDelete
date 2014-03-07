@@ -7,14 +7,14 @@
         isTimetrackModelInitialized: false,
         timeTrackDataSource : null,
         //timeTrackData: [{pairId: 1 , start: 1, stop: 1}],
-        currentProject: "notsetyet",
+        currentPrj: app.currentPrj,
 
         init: function() {
             var that = this,
             dataSource;
           
             kendo.data.ObservableObject.fn.init.apply(that, []);
-			
+
 			if (localStorage["prjTrackData"] === undefined) {
 				localStorage["prjTrackData"] = JSON.stringify([]);
 			}
@@ -116,25 +116,28 @@
 			this.timeTrackDataSource.sync();
 		},
 	});
-    
-    app.timetrackService = {
+
+	app.timetrackService = {
         initTimeTrack: function () {
             app.timetrackService.viewModel.set("isTimetrackModelInitialized", true); 
-        },
-        
+			
+			app.timetrackService.viewModel.timeTrackDataSource.add({start: Date(), stop: Date()});
+
+			$("#stopButton").hide();
+			$("#startButton").show();
+
+		},
         click: function(e) {
 			if (e.sender.element.text().trim() === "Start") {
                 app.timetrackService.viewModel.onStart(e);
-                e.sender.element.text("Stop");
-				$("#startStopButton").kendoMobileButton({ icon: "stop" });
+				$("#startButton").hide();
+				$("#stopButton").show();
+
             } else if (e.sender.element.text().trim() === "Stop") {
                 app.timetrackService.viewModel.onStop(e);
-                e.sender.element.text("Start");
-				$("#startStopButton").kendoMobileButton({ icon: "play" });
+				$("#stopButton").hide();
+				$("#startButton").show();
             } else {
-                var elem = document.getElementById("startStopButton");
-                elem.children[1].innerText="Start";
-				//$("#startStopButton").kendoMobileButton({ icon: "play" });
                 app.timetrackService.viewModel.onDelete(e);
 			}
 			var temp = app.timetrackService.viewModel.timeTrackDataSource.data().length - 23
@@ -145,7 +148,7 @@
 		},
     
         changeProject: function(v) {
-            this.viewModel.set("currentProject",v);
+            this.viewModel.set("currentPrj",v);
         },
         
         viewModel: new TimetrackModel()

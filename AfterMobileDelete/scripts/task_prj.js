@@ -1,11 +1,10 @@
 (function (global) {
     var taskPrjViewModel,
         app = global.app = global.app || {};
-
     
     taskPrjViewModel = kendo.data.ObservableObject.extend({
         taskPrjDataSource: null,
-        currentPrj: "nothingSet",
+        currentPrj: app.currentPrj,
 
         init: function () {
             var that = this,
@@ -29,10 +28,24 @@
         projectSelect: function (e) {
             this.set("currentPrj", e.item.text().trim());
             app.timetrackService.changeProject(e.item.text().trim());
+            
+            app.currentPrj = this.currentPrj;
         }
     });
 
     app.taskPrjService = {
-        viewModel: new taskPrjViewModel()
+        viewModel: new taskPrjViewModel(),
+		
+		initTaskPrj: function () {
+			var that = app.taskPrjService.viewModel;
+			
+			that.taskPrjDataSource.fetch(function(){
+
+				var dataItem = that.taskPrjDataSource.at(0).Id;
+            	app.taskPrjService.viewModel.set("currentPrj", dataItem);
+				app.timetrackService.changeProject(dataItem);
+			})
+        },
+ 
     };
 })(window);

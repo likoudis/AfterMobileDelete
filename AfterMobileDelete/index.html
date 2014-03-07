@@ -86,7 +86,7 @@
 		<div>
 			<p></p>
 			<span 
-				id="startStopButton"
+				id="startButton"
 				data-role="button"
 				data-icon="play"
 				data-click="app.timetrackService.click"
@@ -94,7 +94,16 @@
 
 				Start
             </span>
-			Now on: <b><span data-bind="text: currentProject"></span></b>
+			<span 
+				id="stopButton"
+				data-role="button"
+				data-icon="stop"
+				data-click="app.timetrackService.click"
+				style="width: 79px; margin-left: 4px">
+
+				Stop
+            </span>
+			Now on: <b><span data-bind="text: currentPrj"></span></b>
 			<span 
 				id="deleteButton"
 				data-role="button"
@@ -135,6 +144,7 @@
 	<div id="tabstrip-taskPrj"
 		data-role="view"
 		data-title="TasksAndProjects"
+		data-init="app.taskPrjService.initTaskPrj"
 		data-model="app.taskPrjService.viewModel">
 
 		<ul data-role="listview">
