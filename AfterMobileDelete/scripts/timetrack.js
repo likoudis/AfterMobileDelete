@@ -1,13 +1,10 @@
 (function (global) {
     app = global.app = global.app || {};
     var TimetrackModel;
-	
+
     TimetrackModel = kendo.data.ObservableObject.extend({
-        
-        isTimetrackModelInitialized: false,
         timeTrackDataSource : null,
-        //timeTrackData: [{pairId: 1 , start: 1, stop: 1}],
-        currentPrj: app.currentPrj,
+		currentPrjName : null,
 
         init: function() {
             var that = this,
@@ -15,52 +12,30 @@
           
             kendo.data.ObservableObject.fn.init.apply(that, []);
 
-			if (localStorage["prjTrackData"] === undefined) {
-				localStorage["prjTrackData"] = JSON.stringify([]);
-			}
-
-            dataSource = new kendo.data.DataSource({
-                //data:  this.timeTrackData,
-				//autosync: true,
-				transport: {
-/*
-					create: {
-						url: "data/prjDataStore.json",
-						dataType: "json"
-					},
-					read: {
-						url: "data/prjDataStore.json",
-						dataType: "json"
-					},
-					update: {
-						url: "data/prjDataStore.json",
-						dataType: "json"
-					},
-*/
+			dataSource = new kendo.data.DataSource({
+/*				transport: {
 					create: function(options){
 						var localData = JSON.parse(localStorage["prjTrackData"]);
 						var pairId = localData.length ;
-						localData.push({pairId: pairId, start: "", stop: ""});
-						localData[pairId].start = options.data.start;
-						localData[pairId].stop  = options.data.stop;
-					
-						localData = localStorage["prjTrackData"] = JSON.stringify(localData);
+						localData.splice(0,0,{pairId: pairId, start: "", stop: ""});
+						localData[0].start = options.data.start;
+						localData[0].stop  = options.data.stop;
+						localStorage["prjTrackData"] = JSON.stringify(localData);
 						options.success([]);
 					},
 					read: function(options){
-						var localData = JSON.parse(localStorage["prjTrackData"]); 
+						//var localData = JSON.parse(localStorage["prjTrackData"]); 
 						options.success(localData);
 					},
 					update: function(options){
 						var localData = JSON.parse(localStorage["prjTrackData"]); 
-						var pairId = localData.length - 1;
-						localData[pairId].stop  = options.data.stop;
+						localData[0].stop  = options.data.stop;
 						localStorage["prjTrackData"] = JSON.stringify(localData);
 						options.success([]);
 					},
 					destroy: function(options){ 
 						var localData = JSON.parse(localStorage["prjTrackData"]); 
-						localData.pop();
+						localData.splice(0,1);
 						localStorage["prjTrackData"] = JSON.stringify(localData); 
 						options.success([]);
 					},
@@ -77,81 +52,77 @@
 				//},
 				//change: function(e) {
 				}
-            });
+*/
+			});
 
             this.set("timeTrackDataSource", dataSource);
         },
         
-        onStart: function(e) {
-			var today= new Date();
-			var h=today.getHours();
-			var m=today.getMinutes();
-			var s=today.getSeconds();
+		toHHHmmss: function (t, p) {
+			var h=t.getHours();
+			var m=t.getMinutes();
+			var s=t.getSeconds();
+		
+			if (p) {
+				h= h>10 ? h>100 ? h : "0" + h : "00"+ h;
+        	} else {
+				h= h>10 ? h : "0" + h;
+        	}
 			m= m<10 ? "0" + m : m;
 			s= s<10 ? "0" + s : s;
+			return (h+" : "+m+" : "+s);
+		},
+	
+       onStart: function(e) {
+			var today= new Date();
+			var now = this.toHHHmmss(today, false);
 
-			this.timeTrackDataSource.add({
-				 start: h+" : "+m+" : "+s, stop: "Work in progress"});
+			this.timeTrackDataSource.insert(0,{
+				 start: now, stop: "Work in progress"});
 			this.timeTrackDataSource.sync();
         },
         
         onStop: function(e) {
 			var today= new Date();
-			var h=today.getHours();
-			var m=today.getMinutes();
-			var s=today.getSeconds();
-			m= m<10 ? "0" + m : m;
-			s= s<10 ? "0" + s : s;
+			
+			var duration = this.timeTrackDataSource.data()[0].get("start") - today;
 
-			this.timeTrackDataSource.data()[
-				this.timeTrackDataSource.data().length - 1
-			].set("stop", h+" : "+m+" : "+s);
+			this.timeTrackDataSource.data()[0].set(
+				"stop",duration);
 			this.timeTrackDataSource.sync();
 		},
 
        onDelete: function(e) {
 		   this.timeTrackDataSource.remove(
-				this.timeTrackDataSource.data()[
-					this.timeTrackDataSource.data().length - 1]);
+				this.timeTrackDataSource.data()[0]
+		   );
 			this.timeTrackDataSource.sync();
 		},
 	});
 
 	app.timetrackService = {
         initTimeTrack: function () {
-            app.timetrackService.viewModel.set("isTimetrackModelInitialized", true); 
-			
-			app.timetrackService.viewModel.timeTrackDataSource.add({start: Date(), stop: Date()});
+			var that = app.timetrackService.viewModel;
 
-			$("#stopButton").hide();
+			that.set("currentPrjName", app.dataHandler.getDefaultPrj().name);
 			$("#startButton").show();
-
+			$("#stopButton").hide();
 		},
-        click: function(e) {
-			if (e.sender.element.text().trim() === "Start") {
-                app.timetrackService.viewModel.onStart(e);
-				$("#startButton").hide();
-				$("#stopButton").show();
-
-            } else if (e.sender.element.text().trim() === "Stop") {
-                app.timetrackService.viewModel.onStop(e);
-				$("#stopButton").hide();
-				$("#startButton").show();
-            } else {
-                app.timetrackService.viewModel.onDelete(e);
-				$("#stopButton").hide();
-				$("#startButton").show();
-			}
-			var temp = app.timetrackService.viewModel.timeTrackDataSource.data().length - 23
-			if (temp > 0) {
-				$("#tmeTrkScroller").data("kendoMobileScroller").scrollTo(
-					0, -40 * temp);
-			}
+        startClick: function(e) {
+			app.timetrackService.viewModel.onStart(e);
+			$("#startButton").hide();
+			$("#stopButton").show();
 		},
-    
-        changeProject: function(v) {
-            this.viewModel.set("currentPrj",v);
-        },
+        stopClick: function(e) {
+			app.timetrackService.viewModel.onStop(e);
+			$("#startButton").show();
+			$("#stopButton").hide();
+		},
+        delClick: function(e) {
+			app.timetrackService.viewModel.onDelete(e);
+			$("#startButton").show();
+			$("#stopButton").hide();
+		},
         
         viewModel: new TimetrackModel()
     };

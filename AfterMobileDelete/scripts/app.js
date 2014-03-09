@@ -1,26 +1,28 @@
 (function (global) {
-    var mobileSkin = "",
-        app = global.app = global.app || {};
+	var mobileSkin = "",
+	app = global.app = global.app || {};
 
-    document.addEventListener('deviceready', function () {
-        navigator.splashscreen.hide();
-        $(document.body).height(window.innerHeight);
-    }, false);
+	document.addEventListener('deviceready', function () {
+		navigator.splashscreen.hide();
+		$(document.body).height(window.innerHeight);
+	}, false);
 
-    app.application = new kendo.mobile.Application(document.body, { transition: "fade", layout: "tabstrip-layout"});
+	app.dataHandler.init();
+	app.viewHandler.init();
 
-	app.taskPrjService.initTaskPrj();
-
-    app.changeSkin = function (e) {
+	application = new kendo.mobile.Application(document.body,
+		{ transition: "fade", layout: "tabstrip-layout"});
+	
+	app.changeSkin = function (e) {
         if (e.sender.element.text() === "Flat") {
-            e.sender.element.text("Native");
-            mobileSkin = "flat";
-        }
-        else {
-            e.sender.element.text("Flat");
-            mobileSkin = "";
-        }
-        app.application.skin(mobileSkin);
-    };
-    
+        	e.sender.element.text("Native");
+			mobileSkin = "flat";
+		}
+		else {
+			e.sender.element.text("Flat");
+			mobileSkin = "";
+		}
+		app.application.skin(mobileSkin);
+	};
+	
 })(window);
