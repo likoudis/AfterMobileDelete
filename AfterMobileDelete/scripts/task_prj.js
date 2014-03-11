@@ -8,46 +8,56 @@
 
         init: function () {
             var that = this,
-                dataSource;
+                dataSource
+				data = app.projects;
 
             kendo.data.ObservableObject.fn.init.apply(that, []);
-
+//alert("taskPrjViewModel init");
             dataSource = new kendo.data.DataSource({
-                //data: app.tasksPrjs,
-				data: [
-					{"id": "0", "name": "Project1"}, 
-					{"id": "1", "name": "Task21"},
-					{"id": "2", "name": "Task22"},
-					{"id": "3", "name": "Task23"},
-					{"id": "4", "name": "Task24"},
-					{"id": "5", "name": "Task25"}
-			],
+                data: data,
                 sort: { field: "name", dir: "asc" }
             });
 
 			that.set("taskPrjDataSource", dataSource);
         },
-
+// Invoked by tapping an item of the project listview
         projectSelect: function (e) {
-            app.viewHandler.changePrj(e.item.text().trim())
+            app.viewHandler.setCurrentPrj(e.item.text().trim());
 			this.set("currentPrjName", app.currentPrj.name);
-        }
+        },
+// Invoked by hitting enter when typing in the input box
+        checkEnter: function (e) {
+// Enter acts as Insert
+			if (e.keyCode === 13) {
+				$(e.target).blur();
+				currentPrjName = this.get("currentPrjName").trim(); // get the text from the input box
+				app.viewHandler.setCurrentPrj(currentPrjName);      // tell the other view(s)
+	            this.set("currentPrjName", app.currentPrj.name);    // get the app variable, may be the old one...
+				//this.taskPrjDataSource.add(app.currentPrj);         // 
+			}
+		}
     });
 
     app.taskPrjService = {
         viewModel: new taskPrjViewModel(),
 
 		initTaskPrj: function () {
+//alert("initTaskPrj");
 
 			var that = app.taskPrjService.viewModel;
-			that.taskPrjDataSource.fetch(function(){
-			});
-			that.set("currentPrjName", app.dataHandler.getDefaultPrj().name);
+			that.set("currentPrjName", app.currentPrj.name);
+			//$("#listview-taskPrj").data("kendoMobileListView").setDataSource()
         },
- 
-		pprint: function() {
-alert("pprint")
-			
+		
+		onPrjRename: function() {
+			editPrjList("rename");
+        },
+		onPrjInsert: function() {
+			editPrjList("insert");
+        },
+		onPrjDelete: function() {
+			editPrjList("delete");
         }
+
     };
 })(window);

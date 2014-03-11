@@ -8,11 +8,15 @@
 
         init: function() {
             var that = this,
-            dataSource;
-          
+            dataSource,
+			stopRefreshIntervalId;
+
             kendo.data.ObservableObject.fn.init.apply(that, []);
 
 			dataSource = new kendo.data.DataSource({
+				data: app.prjSSPairs,
+                sort: { field: "start", dir: "desc" }
+				//autoSync: true,
 /*				transport: {
 					create: function(options){
 						var localData = JSON.parse(localStorage["prjTrackData"]);
@@ -42,11 +46,12 @@
 				},
 				schema: {
 					model: { 
-						id: "pairId",
+						id: "id",
 						fields: {
-							"pairId": {type: "number"},
-							"start":  {type: "string"},
-							"stop":   {type: "string"}
+							"id":       {type: "number"},
+							"listName": {type: "string"},
+							"start":    {type: "string"},
+							"stop":     {type: "string"}
 						}
 					}
 				//},
@@ -58,53 +63,64 @@
             this.set("timeTrackDataSource", dataSource);
         },
         
-		toHHHmmss: function (t, p) {
-			var h=t.getHours();
-			var m=t.getMinutes();
-			var s=t.getSeconds();
-		
-			if (p) {
-				h= h>10 ? h>100 ? h : "0" + h : "00"+ h;
-        	} else {
-				h= h>10 ? h : "0" + h;
-        	}
+		toHHHmmss: function (t) {
+			// This is correct only for less than 24h...
+			var h=t.getUTCHours();
+			var m=t.getUTCMinutes();
+			var s=t.getUTCSeconds();
+
+			h= h>10 ? h : "0" + h;
 			m= m<10 ? "0" + m : m;
 			s= s<10 ? "0" + s : s;
 			return (h+" : "+m+" : "+s);
 		},
 	
-       onStart: function(e) {
+		onStart: function(e) {
 			var today= new Date();
-			var now = this.toHHHmmss(today, false);
 
-			this.timeTrackDataSource.insert(0,{
-				 start: now, stop: "Work in progress"});
-			this.timeTrackDataSource.sync();
+			app.dataHandler.addItem(app.prjSSPairs, {listName: "prjSSPairs", start: today, stop: "nice"});
+			app.currentSSPair = app.prjSSPairs[app.prjSSPairs.length-1];
+			this.timeTrackDataSource.read();
+			this.stopRefreshIntervalId = setInterval(this.refreshStop, 1000);
         },
-        
-        onStop: function(e) {
+		
+		refreshStop: function () {
 			var today= new Date();
 			
-			var duration = this.timeTrackDataSource.data()[0].get("start") - today;
+			var duration = today.getTime() - app.currentSSPair.start.getTime();
+			duration = new Date(duration);
+			duration = app.timetrackService.viewModel.toHHHmmss(duration);
+			
+			app.timetrackService.viewModel.timeTrackDataSource.at(
+			  app.timetrackService.viewModel.timeTrackDataSource.data().length -1 ).stop = duration;
+			$("#listview-prjSSPairs").data("kendoMobileListView").refresh()
+        },
 
-			this.timeTrackDataSource.data()[0].set(
-				"stop",duration);
-			this.timeTrackDataSource.sync();
+		onStop: function(e) {
+			clearInterval(this.stopRefreshIntervalId);
+			var today= new Date();
+			
+			var duration = today.getTime() - app.currentSSPair.start.getTime();
+			duration = new Date(duration);
+			duration = app.timetrackService.viewModel.toHHHmmss(duration);
+
+			app.currentSSPair.stop = duration;
+			app.dataHandler.changeItem(app.prjSSPairs, app.currentSSPair);
+			this.timeTrackDataSource.read();
 		},
 
        onDelete: function(e) {
-		   this.timeTrackDataSource.remove(
-				this.timeTrackDataSource.data()[0]
-		   );
-			this.timeTrackDataSource.sync();
+		   app.dataHandler.deleteItem(app.prjSSPairs, app.prjSSPairs.length - 1);
+		   this.timeTrackDataSource.read();
 		},
 	});
 
 	app.timetrackService = {
         initTimeTrack: function () {
 			var that = app.timetrackService.viewModel;
+			that.set("currentPrjName", app.currentPrj.name);
+			//that.timeTrackDataSource.fetch();
 
-			that.set("currentPrjName", app.dataHandler.getDefaultPrj().name);
 			$("#startButton").show();
 			$("#stopButton").hide();
 		},

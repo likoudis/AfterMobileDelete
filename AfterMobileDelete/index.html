@@ -9,7 +9,6 @@
 	<script src="cordova.js"></script>
 	<script src="kendo/js/jquery.min.js"></script>
 	<script src="kendo/js/kendo.mobile.min.js"></script>
-
 </head>
 <body>
 	<!--Home-->
@@ -74,15 +73,23 @@
 		data-init="app.taskPrjService.initTaskPrj"
 		data-model="app.taskPrjService.viewModel">
 
-		<ul data-role="listview"  style="font-size: 1.5em">
-			<li data-icon="recents">
+		<ul style="font-size: 1.66em" data-bind="events: { keyup: checkEnter }">
+			<li>
 				<label>Currently on: 
-					<input type="text" data-bind="value: currentPrjName">
+					<input id="currentPrjNameInput"
+						type="text" data-bind="value: currentPrjName" 
+						style="font-size: 1.33em; width: 10em">
 				</label>
+				<a data-role="button" data-rel="actionsheet" href="#actionsheet" data-icon="downloads" style="float:right">Insert</a>
+				<ul id="actionsheet" data-role="actionsheet" data-popup='{ "width": "auto"}'>
+					<li><a data-action="app.taskPrjService.onPrjRename">Rename</a></li>
+					<li><a data-action="app.taskPrjService.onPrjInsert">Insert</a></li>
+					<li><a data-action="app.taskPrjService.onPrjDelete">Delete</a></li>
+				</ul>
 			</li>
 		</ul>
 
-		<ul data-role="listview" 
+		<ul id="listview-taskPrj" data-role="listview" 
 			data-style="inset"
 			data-bind="source: taskPrjDataSource, click: projectSelect"
 			data-template="projectListTmpl"
@@ -135,6 +142,7 @@
 		</div>
 
 		<div 
+			id="listview-prjSSPairs" 
 			data-role="listview" 
 			data-style="inset" 
 			data-bind="source: timeTrackDataSource"
@@ -166,17 +174,17 @@
 			<div data-role="tabstrip">
 				<a href="#tabstrip-home"      data-icon="home">Home</a>
 				<a href="#tabstrip-login"     data-icon="contacts">Login</a>
-				<a href="#tabstrip-timetrack" data-icon="recents">Track</a>
 				<a href="#tabstrip-taskPrj"   data-icon="bookmarks">Tasks</a>
+				<a href="#tabstrip-timetrack" data-icon="recents">Track</a>
 			</div>
 		</div>
 	</div>
 
 	<script src="scripts/dataHandler.js"></script>
 	<script src="scripts/viewHandler.js"></script>
-	<script src="scripts/login.js"></script>
-	<script src="scripts/timetrack.js"></script>
-	<script src="scripts/task_prj.js"></script>
 	<script src="scripts/app.js"></script>
-</body>
+	<script src="scripts/login.js"></script>
+	<script src="scripts/task_prj.js"></script>
+	<script src="scripts/timetrack.js"></script>
+<</body>
 </html>

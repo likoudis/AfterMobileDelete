@@ -4,16 +4,17 @@
 	app.viewHandler = {
 
 		init: function () {
+//alert("viewHandler init");
+
  		},
 
-		changePrj: function (newProjectName) {
-// logic to change current project
-			var currentPrjName = app.dataHandler.changePrj(newProjectName);
+		setCurrentPrj: function (newProjectName) {
+			var currentPrjName = app.dataHandler.setCurrentPrj(newProjectName);
 
 			app.timetrackService.viewModel.set("currentPrjName", currentPrjName); 
 			
 			return currentPrjName;
-		}
+        }
 		
 	};
 }) (window);

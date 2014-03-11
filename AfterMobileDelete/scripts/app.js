@@ -1,3 +1,5 @@
+//alert("outside the app function");
+
 (function (global) {
 	var mobileSkin = "",
 	app = global.app = global.app || {};
@@ -7,6 +9,7 @@
 		$(document.body).height(window.innerHeight);
 	}, false);
 
+//alert("INside the app function");
 	app.dataHandler.init();
 	app.viewHandler.init();
 
@@ -22,7 +25,7 @@
 			e.sender.element.text("Flat");
 			mobileSkin = "";
 		}
-		app.application.skin(mobileSkin);
+		application.skin(mobileSkin);
 	};
 	
 })(window);
