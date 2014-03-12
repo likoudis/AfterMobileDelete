@@ -4,8 +4,6 @@
 	app.viewHandler = {
 
 		init: function () {
-//alert("viewHandler init");
-
  		},
 
 		setCurrentPrj: function (newProjectName) {

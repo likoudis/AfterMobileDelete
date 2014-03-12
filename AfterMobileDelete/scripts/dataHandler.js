@@ -31,13 +31,9 @@
 			app.projects = JSON.parse(localStorage["projects"]);
 			app.currentPrj = app.projects[app.projects.length - 1];
 
-			localStorage["prjSSPairs" + app.currentPrj.id] = JSON.stringify([
-				{"id": 2, "listName": "prjSSPairs", "start": "start3", stop: "stop3"}, 
-				{"id": 1, "listName": "prjSSPairs", "start": "start2", stop: "stop2"}, 
-				{"id": 0, "listName": "prjSSPairs", "start": "start1", stop: "stop1"}
-			]);
+			localStorage["prjSSPairs" + app.currentPrj.id] = JSON.stringify([]);
 			app.prjSSPairs = JSON.parse(localStorage["prjSSPairs" + app.currentPrj.id]);
-			app.currentSSPair = app.prjSSPairs[2];
+			//app.currentSSPair = app.prjSSPairs[2];
 		},
 
 		findPrjByName: function (prjName) {
@@ -56,11 +52,10 @@
             }
 
 			if (localStorage["prjSSPairs" + app.currentPrj.id] === undefined) 
-				localStorage["prjSSPairs" + app.currentPrj.id] = JSON.stringify([
-				    {"id": 0, "start": "start1", stop: "stop1"}]);
+				localStorage["prjSSPairs" + app.currentPrj.id] = JSON.stringify([]);
 
 			app.prjSSPairs = JSON.parse(localStorage["prjSSPairs" + app.currentPrj.id]);
-			
+
 			return (app.currentPrj.name);
 		},
 
