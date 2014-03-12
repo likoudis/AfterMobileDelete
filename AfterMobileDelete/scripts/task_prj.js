@@ -8,13 +8,12 @@
 
         init: function () {
             var that = this,
-                dataSource
-				data = app.projects;
+                dataSource;
 
             kendo.data.ObservableObject.fn.init.apply(that, []);
-//alert("taskPrjViewModel init");
+
             dataSource = new kendo.data.DataSource({
-                data: data,
+                data: app.projects,
                 sort: { field: "name", dir: "asc" }
             });
 
@@ -42,13 +41,16 @@
         viewModel: new taskPrjViewModel(),
 
 		initTaskPrj: function () {
-//alert("initTaskPrj");
 
 			var that = app.taskPrjService.viewModel;
 			that.set("currentPrjName", app.currentPrj.name);
 			//$("#listview-taskPrj").data("kendoMobileListView").setDataSource()
         },
-		
+
+		editPrjList: function () {
+			
+        },
+
 		onPrjRename: function() {
 			editPrjList("rename");
         },
