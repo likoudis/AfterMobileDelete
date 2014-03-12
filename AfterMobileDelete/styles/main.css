@@ -26,19 +26,19 @@ body, html {
 
 /* IMAGE STYLES*/
 .img {
-    background-image: url(../styles/images/appbuilder.png);
+    background-image: url(../styles/images/DITbkgr.png);
     background-repeat: no-repeat;
     text-align: center;
-    width: 320px;
-    height: 193px;
+    width: 344px;
+    height: 256px;
     margin: 0px auto;
 }
 
 .logo {
-    background-image: url(../styles/images/logo.png);
+    background-image: url(../styles/images/DITlogo.png);
     background-repeat: no-repeat;
-    width: 319px;
-    height: 60px;
+    width: 307px;
+    height: 86px;
     margin: 40px auto;
 }
 
@@ -314,13 +314,13 @@ body, html {
 /* RETINA DISPLAY STYLES*/
 @media only screen and (-webkit-min-device-pixel-ratio: 2),(min-resolution: 192dpi) {
     .img {
-        background-image: url(../styles/images/appbuilder2x.png);
+        background-image: url(../styles/images/DITbkgrx2.png);
         background-repeat: no-repeat;
         background-size: 100%;
     }
 
     .logo {
-        background-image: url(../styles/images/logo2x.png);
+        background-image: url(../styles/images/DITlogox2.png);
         background-repeat: no-repeat;
         background-size: 100%;
     }
